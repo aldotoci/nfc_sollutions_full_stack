@@ -7,6 +7,10 @@
     --stan-store-theme-primary-color: #BB1616;
 }
 
+html{
+    background-color: #000;
+}
+
 *,
 :after,
 :before {
@@ -20,6 +24,9 @@ div {
 body, div {
     overflow-x: hidden;
     margin: 0;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 :root {
     --stan-store-theme-primary-text-color: #ffffff;

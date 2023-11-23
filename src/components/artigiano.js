@@ -1,7 +1,10 @@
 import base_preview from '../images/base_preview_artigiano.jpeg'
 
+export const viewport = {
+  themeColor: '#ffffff',
+}
+
 export default function Home({links}) {
-  console.log('links', links)
   const storeName = 'Artigano'
   const tiktokLink = links['tiktok']
   const instagramLink = links['instagram']
