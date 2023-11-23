@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
 			const exists = await Subdomains.findOne({subdomain_name: subdomain_name})
 
-      res.status(200).json({ exists: !!exists, links: exists?.links || {} });
+      res.status(200).json({ exists: !!exists, links: exists?.links, storeName: exists?.storeName || {} });
     } catch (error) {
       console.error('Error handeling Request:', error.message);
       res.status(500).json({ error: 'Internal Server Error' });

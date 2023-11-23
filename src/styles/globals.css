@@ -197,7 +197,7 @@ body, div {
     top: 0;
     width: 100%;
     height: 10%;
-    background: linear-gradient(transparent 1%, var(--stan-store-theme-secondary-color) 99%) !important;
+    background: linear-gradient(transparent 1%, #171717 99%) !important;
     transform: rotate(180deg);
 }
 

@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
         type: Object,
         default: [],
     },
+    storeName: {
+        type: String,
+        required: true,
+    },
 });
 
 const model_name = 'subdomains'

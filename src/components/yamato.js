@@ -1,4 +1,4 @@
-import base_preview from '../images/base_preview_artigiano.jpeg'
+import base_preview from '../images/base_preview_yamato.jpg'
 
 export const viewport = {
   themeColor: '#171717',
@@ -126,7 +126,7 @@ export default function Home({links, storeName}) {
                   />
                 </div>
                 <div className="description">
-                  <div className="block__heading">Google Review</div>
+                  <div className="block__heading">Google Reviews</div>
                   <div className="block__subheading">Review our restaurant</div>
                 </div>
               </div>
