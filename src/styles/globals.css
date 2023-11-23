@@ -189,6 +189,18 @@ body, div {
     height: 100%;
 }
 
+.store-header__image::before {
+    content: "";
+    position: absolute;
+    display: inline-block;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 10%;
+    background: linear-gradient(transparent 1%, var(--stan-store-theme-secondary-color) 99%) !important;
+    transform: rotate(180deg);
+}
+
 .store-header__image::after {
     content: "";
     position: absolute;
