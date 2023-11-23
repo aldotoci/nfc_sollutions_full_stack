@@ -35,6 +35,7 @@ export default function Home({links, storeName}) {
     window.open(link_clicked, '_blank');
   }
 
+  
   return (
     <>
       <div className="store__container">
