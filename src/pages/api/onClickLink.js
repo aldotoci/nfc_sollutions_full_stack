@@ -11,6 +11,8 @@ export default async function handler(req, res) {
     try {
         /* get card_id from json body */
         let { card_id, link_type, link_clicked } = req.body;
+        // Get the client's IP address from the request object
+        const ipAddress = req.connection.remoteAddress;
 
         
         const subdomain_name = req.headers.host.split('.')[0];
@@ -24,8 +26,10 @@ export default async function handler(req, res) {
             card_id=null;
 
         const links = exists?.links || {};
+
         if(!links[link_type] || !!!link_type) return res.status(400).json({ error: 'Bad Request' })
-        if(link_clicked !== links[link_type]) return res.status(400).json({ error: 'Bad Request' })
+        if(link_type !== 'book')
+          if(link_clicked !== links[link_type]) return res.status(400).json({ error: 'Bad Request' })
 
 
         const cookies = req.headers.cookie?.split(';').reduce((acc, cookie) => {
@@ -46,7 +50,8 @@ export default async function handler(req, res) {
             unix_timestamp,
             card_id,
             link_type,
-            link_clicked
+            link_clicked,
+            ip: ipAddress
         });
         res.status(200).json({ status: 'ok' });
     } catch (error) {

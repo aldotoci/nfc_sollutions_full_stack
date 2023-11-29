@@ -1,4 +1,6 @@
-import base_preview from '../images/base_preview_yamato.jpg'
+import base_preview from '@/images/base_previews/ulliri.jpg'
+import profile_preview from '@/images/profile_previews/ulliri.jpg'
+import { useRouter } from 'next/router'
 
 export const viewport = {
   themeColor: '#171717',
@@ -33,6 +35,30 @@ export default function Home({links, storeName}) {
       }).catch((error) => {});
 
     window.open(link_clicked, '_blank');
+  }
+
+  function onBook(link_clicked, link_type){
+    const searchParams = new URLSearchParams(window.location.search);
+    const card_id = searchParams.get('card_id');
+    fetch('/api/onClickLink', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        card_id,
+        link_clicked, 
+        link_type,
+      }),
+      }).then(response => {
+        if (response.ok) {
+          console.log('click recorded');
+        } else {
+          console.log('click not recorded');
+        }
+      }).catch((error) => {});
+
+      useRouter().push(card_id ?  `/book?card_id=${card_id}` : '/book' , undefined, { shallow: true })
   }
 
   return (
@@ -98,6 +124,24 @@ export default function Home({links, storeName}) {
             </div>
           </div>
           <div className="store-content">
+            {/* <div className="store-link">
+                <div className="store-link-info">
+                  <div className="block-image">
+                    <img
+                      className=""
+                      src={profile_preview?.src || profile_preview}
+                      alt="Tripadvisor Logo"
+                    />
+                  </div>
+                  <div className="description">
+                    <div className="block__heading">Book online</div>
+                    <div className="block__subheading">Reserve your table</div>
+                  </div>
+                </div>
+                <button onClick={() => onBook('/book', 'book')} className="click-link-button">
+                  <div>Book</div>
+                </button>
+              </div> */}
             <div className="store-link">
               <div className="store-link-info">
                 <div className="block-image">

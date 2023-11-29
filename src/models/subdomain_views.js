@@ -28,6 +28,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    ip: {
+        type: String,
+        required: false,
+    },
+    URL: {
+        type: String,
+        required: true,
+    }
 });
 
 const model_name = 'subdomain_views'

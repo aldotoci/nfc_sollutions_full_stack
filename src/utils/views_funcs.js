@@ -5,6 +5,11 @@ import Subdomains from '@/models/subdomains';
 connectDB();
 
 export async function onWebView({req, query}) {
+  // Get the client's IP address from the request object
+  const ipAddress = req.connection.remoteAddress;
+
+  // Get the the current url
+  const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
 
   const cookies = req.headers.cookie?.split(';').reduce((acc, cookie) => {
     const [key, value] = cookie.split('=')
@@ -32,5 +37,7 @@ export async function onWebView({req, query}) {
     user_agent,
     unix_timestamp,
     card_id,
+    ip: ipAddress,
+    URL: fullUrl
   });
 }
