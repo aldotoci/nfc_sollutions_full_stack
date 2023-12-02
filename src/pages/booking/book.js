@@ -42,13 +42,12 @@ export async function getServerSideProps(context) {
 export default function Home({ subdomain, storeName }) {
   const [currentFormState, setCurrentFormState] = useState(0);
   const [formData, setFormData] = useState({
-    reserved_time: dayjs(`${dayjs().format("YYYY-MM-DD")}T17:30`),
+    reserved_time: dayjs(`${dayjs().format("YYYY-MM-DD")}T17:30`).format("YYYY-MM-DDTHH:mm"),
     full_name: undefined,
     phone_number: '+355',
     email_address: undefined,
-    guests: 3,
+    guests: 2,
     birthday: undefined,
-    reserved_table: undefined,
   });
 
   if (subdomain === false) return <></>;
@@ -107,12 +106,12 @@ export default function Home({ subdomain, storeName }) {
   }
 
   function onHourChange(date) {
-    const prevDate = dayjs(formData.reserved_time).format("YYYY-MM-DD");
-    const newHour = dayjs(date).format("HH:mm");
-    setFormData({
-      ...formData,
-      reserved_time: dayjs(`${prevDate}T${newHour}`).format("YYYY-MM-DDTHH:mm"),
-    });
+    // const prevDate = dayjs(formData.reserved_time).format("YYYY-MM-DD");
+    // const newHour = dayjs(date).format("HH:mm");
+    // setFormData({
+    //   ...formData,
+    //   reserved_time: dayjs(`${prevDate}T${newHour}`).format("YYYY-MM-DDTHH:mm"),
+    // });
   }
 
   function onDateLeft() {
@@ -177,30 +176,10 @@ export default function Home({ subdomain, storeName }) {
     setFormData({ ...formData, guests: currentGuest < 0 ? 0 : currentGuest });
   }
 
-  function onTableChange(v) {
+  function onBirthdayChange(date) {
     setFormData({
       ...formData,
-      table: v.target.value.toString(),
-    });
-  }
-
-  function onTableLeft() {
-    const lastChar = (parseInt(formData?.table?.slice(-1)) || 0) - 1;
-    setFormData({
-      ...formData,
-      table: `${formData?.table?.slice(0, formData.table.length - 1) || ""}${
-        lastChar < 0 ? 0 : lastChar
-      }`,
-    });
-  }
-
-  function onTableRight() {
-    const lastChar = (parseInt(formData?.table?.slice(-1)) || 0) + 1;
-    setFormData({
-      ...formData,
-      table: `${formData?.table?.slice(0, formData.table.length - 1) || ""}${
-        lastChar < 0 ? 0 : lastChar
-      }`,
+      birthday: dayjs(date).format("YYYY-MM-DD"),
     });
   }
 
@@ -214,6 +193,8 @@ export default function Home({ subdomain, storeName }) {
           label="Date"
           format="DD/MM/YYYY"
           value={dayjs(formData?.reserved_time)}
+          maxDate={dayjs().add(1, 'month')}
+          minDate={dayjs()}
         />
       </LocalizationProvider>
       <ArrowForwardIosIcon onClick={onDateRight} />
@@ -252,25 +233,25 @@ export default function Home({ subdomain, storeName }) {
     </div>
   );
 
-  const table = (
-    <div className={styles.inputComponentWrapper}>
-      <ArrowBackIosIcon onClick={onTableLeft} />
-      <TextField
-        label="Table"
-        value={formData?.reserved_table}
-        variant="filled"
-        onChange={onTableChange}
-      />
-      <ArrowForwardIosIcon onClick={onTableRight} />
-    </div>
-  );
-
 	const onNext = (nextFormN) => {
 		setCurrentFormState(nextFormN);
 	}
 
 	const onSubmit = () => {
-		// TO DO
+    for (const [key, value] of Object.entries(formData)) {
+      if(value === undefined || value === null || value === '') {
+        alert('Please fill all fields')
+        return;
+      }
+    }
+
+		fetch(`/api/book`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
 	}
 
   const firstForm = (
@@ -278,7 +259,6 @@ export default function Home({ subdomain, storeName }) {
       <div className="store-link">{date_component}</div>
       <div className="store-link">{hour_component}</div>
       <div className="store-link">{guests}</div>
-      <div className="store-link">{table}</div>
       <Button onClick={() => onNext(1)}>Next</Button>
     </>
   );
@@ -289,35 +269,36 @@ export default function Home({ subdomain, storeName }) {
           label="Full Name"
           value={formData?.full_name}
           fullWidth
-          onChange={(email_address) => setFormData((formData) => ({...formData, email_address}))}
+          onChange={(e) => setFormData((formData) => ({...formData, full_name: e.target.value}))}
         />
 				<TextField
 					label="Email"
           fullWidth
 					type="email"
 					value={formData?.email_address}
-          onChange={(email_address) => setFormData((formData) => ({...formData, email_address}))}
+          onChange={(e) => setFormData((formData) => ({...formData, email_address: e.target.value}))}
 				/>
         <PhoneInput
           defaultCountry="Al"
           value={formData?.phone_number}
-          onChange={(phone) => setFormData((formData) => ({...formData, phone_number: phone}))}
+          onChange={(phone_number) => setFormData((formData) => ({...formData, phone_number}))}
         />
         <div>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <MobileDatePicker
-              onChange={onDateChange}
+              onChange={onBirthdayChange}
               variant="filled"
-              label="Date"
-              format="DD/MM/YYYY"
-              value={dayjs(formData?.reserved_time)}
+              label="Birthday"
+              format="DD/MM"
+              value={formData?.birthday ? dayjs(formData?.birthday) : undefined}
             />
           </LocalizationProvider>
         </div>
 			</div>
 			<div className={styles?.midFormNavButtonsContainer}>
-      	<Button className={styles?.prevButton} onClick={() => onNext(0)}>Prev</Button>
-				<Button onClick={onSubmit}>Submit</Button>
+        <ArrowBackIosIcon onClick={() => onNext(0)} style={{fill: "#BB1616", fontSize: 30}} />
+      	{/* <Button className={styles?.prevButton} onClick={() => onNext(0)}>Prev</Button> */}
+        <Button onClick={onSubmit}>Submit</Button>
 			</div>
 	</>;
 

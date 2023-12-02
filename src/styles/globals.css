@@ -9,6 +9,7 @@
 
 html{
     background-color: #000;
+    height: 100%;
 }
 
 *,
@@ -21,10 +22,21 @@ div {
     display: block;
     overflow-y: hidden;
 }
+body{
+    height: 100%;
+}
+
+#__next {
+    height: 100%;
+}
+
+.store__container{
+    max-width: 800px;
+}
+
 body, div {
     overflow-x: hidden;
     margin: 0;
-    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -239,8 +251,8 @@ body, div {
 
 .store-content {
     background-color: black;
-    height: -webkit-fill-available;
-    width: -webkit-fill-available;
+    height: fill-available;
+    width: fill-available;
     padding: 0 20px 20px !important;
     min-height: 80vh;   
 }
@@ -367,4 +379,41 @@ body, div {
     text-overflow: ellipsis !important;
     word-wrap: anywhere;
     color: var(--stan-store-theme-button-text-color);
+}
+
+
+.react-international-phone-input-container .react-international-phone-country-selector-button{
+    background-color: #000 !important;
+    padding: 20px !important;
+    border-color: rgba(255, 255, 255, 0.23);
+}
+.react-international-phone-country-selector-dropdown{
+    background-color: #000 !important;
+    padding: 20px !important;
+    border: 1px solid rgba(255, 255, 255, 0.23) !important;
+    z-index: 10 !important;
+    position: fixed !important;
+    margin-top: 27.3rem !important;
+    margin-left: 3.3rem !important;
+}
+.react-international-phone-country-selector-dropdown__list-item .react-international-phone-country-selector-dropdown__list-item--selected .react-international-phone-country-selector-dropdown__list-item--focused{
+    background-color: black;
+    padding: 20px !important;
+}
+.react-international-phone-input-container .react-international-phone-input{
+    background-color: rgba(255, 255, 255, 0.09) !important;
+    color: white !important;
+    padding: 20px !important;
+    border-color: rgba(255, 255, 255, 0.23) !important;
+
+}
+.react-international-phone-flag-emoji .react-international-phone-country-selector-button__flag-emoji{
+    margin-right: 5px !important;
+}
+.react-international-phone-country-selector-dropdown__list-item{
+    background-color: #000 !important;
+    color: white !important;
+    /*position: relative;  or absolute, fixed, etc. */
+    z-index: 10 !important;
+    /* position: relative !important; */
 }

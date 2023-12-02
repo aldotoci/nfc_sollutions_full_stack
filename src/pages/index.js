@@ -12,6 +12,7 @@ export async function getServerSideProps(context) {
   const apiUrl = `http://${req.headers.host}/api/exists_subdomains?subdomain=${subdomain}`
   const res = await fetch(apiUrl)
   const {exists, links, storeName} = await res.json()
+  if(!exists) return {props: {subdomain: false}}
   return {
     props: {
       subdomain: exists ? subdomain : false,
@@ -22,7 +23,7 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function Home({subdomain, links, storeName}) {
+export default function Home({subdomain, links=false, storeName=false}) {
   if(subdomain === false) return <></>
 
   function make_second_get_request() {
@@ -56,5 +57,5 @@ export default function Home({subdomain, links, storeName}) {
     }
   }, []); // Empty dependency array ensures this effect runs once on mount
 
-  return domain_to_component[subdomain]({links, storeName})
+  return subdomain ? domain_to_component[subdomain]({links, storeName}) : <></>
 }

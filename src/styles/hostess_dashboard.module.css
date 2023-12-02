@@ -1,0 +1,57 @@
+
+
+.dashboard_container{
+    color: white !important;
+    height: 100%;
+}
+.navigator_container{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.23);
+    padding: 5px 20px;
+}
+
+.body_container{
+    display: flex;
+    height: fill-available;
+}
+
+.left_nav_container{
+    width: 300px;
+    border-right: solid 1px rgba(255, 255, 255, 0.23);
+    padding: 10px;
+}
+
+.main_body_container{
+    width: fill-available;
+}
+
+.body_header_container{
+    height: 60px;
+    width: fill-available;
+    border: 1px solid rgba(255, 255, 255, 0.23);
+    padding: 15px 15px;
+}
+
+.table_and_notifications{
+    display: flex;
+    height: fill-available;
+}
+
+.right_notifications_container{
+    width: 500px;
+    border-left: solid 1px rgba(255, 255, 255, 0.23);
+    padding: 0 20px;
+}
+
+.restaurant_map_container{
+    width: fill-available;
+    height: fill-available;
+    padding: 20px;
+}
+
+.table_and_notifications_container{
+    display: flex;
+    height: fill-available;
+
+}   

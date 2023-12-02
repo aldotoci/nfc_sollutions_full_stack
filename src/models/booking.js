@@ -17,9 +17,6 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    card_id: {
-        type: Number,
-    },
     user_agent: {
         type: String,
         required: true,
@@ -38,7 +35,7 @@ const userSchema = new mongoose.Schema({
     },
     reserved_table: {
         type: String,
-        required: true,
+        defaultValue: 'To Be Decided',
     },
     full_name: {
         type: String,

@@ -7,9 +7,10 @@ export const viewport = {
 }
 
 export default function Home({links, storeName}) {
+  const router = useRouter()
+
   const tiktokLink = links['tiktok']
   const instagramLink = links['instagram']
-
   const trip_advisor_link = links['tripadvisor']
   const google_review_link = links['googlereview']
   
@@ -58,7 +59,7 @@ export default function Home({links, storeName}) {
         }
       }).catch((error) => {});
 
-      useRouter().push(card_id ?  `/book?card_id=${card_id}` : '/book' , undefined, { shallow: true })
+      router.push(card_id ?  `/book?card_id=${card_id}` : '/book' , undefined, { shallow: true })
   }
 
   return (
@@ -124,7 +125,7 @@ export default function Home({links, storeName}) {
             </div>
           </div>
           <div className="store-content">
-            {/* <div className="store-link">
+            <div className="store-link">
                 <div className="store-link-info">
                   <div className="block-image">
                     <img
@@ -141,7 +142,7 @@ export default function Home({links, storeName}) {
                 <button onClick={() => onBook('/book', 'book')} className="click-link-button">
                   <div>Book</div>
                 </button>
-              </div> */}
+              </div>
             <div className="store-link">
               <div className="store-link-info">
                 <div className="block-image">
