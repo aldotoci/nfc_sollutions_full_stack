@@ -1,4 +1,8 @@
 import mongoose from 'mongoose';
+import connectDB from '@/config/mongoose';
+
+// Connect to MongoDB
+connectDB();
 
 function isModelDefined(modelName) {
     return mongoose.models[modelName] !== undefined;
@@ -56,6 +60,15 @@ const userSchema = new mongoose.Schema({
     birthday: {
         type: Date,
         required: true,
+    },
+    description: {
+        type: String,
+        required: false,
+        defaultValue: '',
+    },
+    status: {
+        type: String,
+        defaultValue: 'open',
     },
 });
 

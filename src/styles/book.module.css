@@ -2,7 +2,6 @@
     margin-top: 30px;
 }
 
-
 .inputComponentWrapper{
     display: flex;
     flex-direction: row;
@@ -35,4 +34,8 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.restaurant_title{
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
 }

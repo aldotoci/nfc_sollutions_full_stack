@@ -245,7 +245,7 @@ export default function Home({ subdomain, storeName }) {
       }
     }
 
-		fetch(`/api/book`, {
+		fetch(`/api/booking/book`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

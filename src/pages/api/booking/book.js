@@ -1,10 +1,6 @@
-import connectDB from '../../config/mongoose';
-import Booking from '../../models/booking';
+import Booking from '@/models/booking';
 import Subdomains from '@/models/subdomains';
-import { useDragLayer } from 'react-dnd'
-
-// Connect to MongoDB
-connectDB();
+import io from 'socket.io-client'
 
 // API route to get all users
 export default async function handler(req, res) {
@@ -37,20 +33,35 @@ export default async function handler(req, res) {
         } = req.body;
 
 
-        await Booking.create({
-            subdomain_name,
-            unix_timestamp,
-            user_agent,
-            uid,
-            ip,
+        const new_book = {
+          subdomain_name,
+          unix_timestamp,
+          user_agent,
+          uid,
+          ip,
 
-            reserved_time,
-            full_name,
-            phone_number,
-            email_address,
-            guests,
-            birthday,
+          reserved_time,
+          full_name,
+          phone_number,
+          email_address,
+          guests,
+          birthday,
+          reserved_table: null,
+          description: '',
+          status: 'open',
+        }
+
+        await Booking.create(new_book);
+
+        const socket = io('http://localhost:8000')
+        socket.timeout(5000).emit('new_booking', new_book, (err, response) => {
+          if (err) {
+            // the server did not acknowledge the event in the given delay
+          } else {
+            console.log(response.status); // 'ok'
+          }
         });
+
         res.status(200).json({ status: 'ok' });
     } catch (error) {
       console.error('Error handeling Request:', error.message);

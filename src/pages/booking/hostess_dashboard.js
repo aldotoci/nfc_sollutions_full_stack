@@ -17,12 +17,12 @@ export async function getServerSideProps(context) {
 
 export default function Component({subdomain}) {
   const { data: session } = useSession()
-  if (!session) {
-    return (
-      <>
-        <button onClick={() => signIn()}>Sign in</button>
-      </>
-    )
-  }
-  return subdomain ? domain_to_hostess[subdomain]() : <></>
+  
+  console.log('session', session)
+
+  if (session) return subdomain ? domain_to_hostess({subdomain})[subdomain] : <></>
+  // if (session) return <Ulliri subdomain={subdomain} />
+  
+  
+  return <button onClick={signIn}>Sing In</button>
 }

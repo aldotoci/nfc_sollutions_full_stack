@@ -1,0 +1,9 @@
+.card_container{
+    margin: 10px;
+}
+
+.buttons_container{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}

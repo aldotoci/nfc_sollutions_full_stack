@@ -59,7 +59,7 @@ export default function Home({links, storeName}) {
         }
       }).catch((error) => {});
 
-      router.push(card_id ?  `/book?card_id=${card_id}` : '/book' , undefined, { shallow: true })
+      router.push(card_id ?  `/booking/book?card_id=${card_id}` : '/booking/book' , undefined, { shallow: true })
   }
 
   return (
