@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
+import { useSession, signIn, signOut } from "next-auth/react"
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -49,6 +50,10 @@ export default function Home({ subdomain, storeName }) {
     guests: 2,
     birthday: undefined,
   });
+
+  const { data: session } = useSession()
+  
+  console.log('session', session)
 
   if (subdomain === false) return <></>;
 
@@ -263,6 +268,23 @@ export default function Home({ subdomain, storeName }) {
     </>
   );
 
+  const google_login_button = <div className={styles.google_login_button_container}>
+    <a href="/api/google">
+      <button className={styles.google_button}>
+        <img src={"/images/google_logo.jpeg"} alt="google_icon"/> Google
+      </button>
+    </a>
+  </div>
+
+  const login_step = <div className={styles.login_step_container}>
+      <ArrowBackIosIcon onClick={() => onNext(0)} style={{fill: "#BB1616", fontSize: 30}} />
+    <div className={styles.login_buttons_container}>
+      {google_login_button}
+      <Button onClick={() => onNext(2)}>Login as a guest</Button>
+    </div>
+    <div></div>
+  </div>
+
   const secondForm = <>
 		  <div className={`store-link ${styles.secondFormContainer}`}>
         <TextField
@@ -296,7 +318,7 @@ export default function Home({ subdomain, storeName }) {
         </div>
 			</div>
 			<div className={styles?.midFormNavButtonsContainer}>
-        <ArrowBackIosIcon onClick={() => onNext(0)} style={{fill: "#BB1616", fontSize: 30}} />
+        <ArrowBackIosIcon onClick={() => onNext(1)} style={{fill: "#BB1616", fontSize: 30}} />
       	{/* <Button className={styles?.prevButton} onClick={() => onNext(0)}>Prev</Button> */}
         <Button onClick={onSubmit}>Submit</Button>
 			</div>
@@ -368,7 +390,8 @@ export default function Home({ subdomain, storeName }) {
           </div>
           <div className={`store-content ${styles.personal_info_container}`}>
             {currentFormState === 0 && firstForm}
-            {currentFormState === 1 && secondForm}
+            {currentFormState === 1 && login_step}
+            {currentFormState === 2 && secondForm}
           </div>
         </div>
       </div>
