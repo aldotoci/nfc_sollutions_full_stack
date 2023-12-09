@@ -6,6 +6,24 @@
     justify-content: center;
     border: 1px solid rgba(255, 255, 255, 0.23);
     margin: 10px;
+    /*transition animation */
+    transition: all 0.3s ease-in-out;
+}
+.container_selected{
+    width: 9em;
+    height: 9em;
+    margin: 2px;
+    margin: 7px;
+    transition: all 0.3s ease-in-out;
+
+}
+.selected_table_container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(144, 202, 249, 1);
+    width: max-content;
+    transition: all 0.3s ease-in-out;
 }
 
 .reservations_count_wrapper{

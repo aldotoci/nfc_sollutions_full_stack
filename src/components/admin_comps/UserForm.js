@@ -6,7 +6,7 @@ export function UserCreateForm() {
     const [user, setUser] = useState({
         username: '',
         password: '',
-        role: 'user'
+        role: 'hostess'
     })
 
     const handleChange = (e) => {

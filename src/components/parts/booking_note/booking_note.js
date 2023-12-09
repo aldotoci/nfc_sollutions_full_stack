@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -46,17 +46,27 @@ const accept_modal_style = {
   p: 4,
 }
 
-export default function Component({booking, onBookRemove, onBookAccept, tables}) {
+export default function Component({booking, onBookRemove, onBookAccept, tables, getReservationsOnDateRange}) {
     const [open, setOpen] = useState(false);
     const [acceptModalVisible, setAcceptModalVisible] = useState(false);
     const [selectedTableNumber, setSelectedTableNumber] = useState();
 
+    const [tables_flat, setTables_flat] = useState(tables.flat().filter((table) => table !== 0))
+
+    function update_tables()  {
+      getReservationsOnDateRange(dayjs(booking?.reserved_time), dayjs().add(2, 'hours')).then((bookings) => {
+        const tablesInBookings = bookings.map((booking) => booking.reserved_table)
+        setTables_flat(tables.flat().filter((table) => table !== 0 && !tablesInBookings.includes(table.toString())))
+      })
+    }
+
+    useEffect(() => {
+      update_tables()
+    }, [booking])
+
     const birthday = dayjs(booking.birthday).format('DD/MM')
     const date = dayjs(booking.reserved_time).format('DD/MM')
     const time = dayjs(booking.reserved_time).format('HH:mm')
-
-    const tables_flat = tables.flat().filter((table) => table !== 0)
-    const list_obs = tables_flat
 
     const reject_modal = <Modal
         open={open}
@@ -93,7 +103,7 @@ export default function Component({booking, onBookRemove, onBookAccept, tables})
         <Autocomplete
           disablePortal
           id="combo-box-demo"
-          options={list_obs}
+          options={tables_flat}
           sx={{ width: 200 }}
           getOptionLabel={(option) => option.toString() || ""}
           onSelect={(event) => {

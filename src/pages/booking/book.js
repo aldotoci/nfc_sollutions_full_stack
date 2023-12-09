@@ -65,6 +65,14 @@ export default function Home({ subdomain, storeName }) {
   }
 
   useEffect(() => {
+    const reserved_time = formData?.reserved_time;
+    const guests = formData?.guests;
+
+    localStorage.setItem("reserved_time", reserved_time);
+    localStorage.setItem("guests", guests);
+  }, [formData])
+
+  useEffect(() => {
     // Function to generate a UUID (you can use your preferred method)
     const generateUUID = () => {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -79,7 +87,6 @@ export default function Home({ subdomain, storeName }) {
 
     // Check if the uid_token exists in cookies
     const storedUidToken = Cookies.get("uid_token");
-    console.log("storedUidToken", storedUidToken);
     if (storedUidToken) {
       // If it exists, set it in the state
     } else {
@@ -87,19 +94,34 @@ export default function Home({ subdomain, storeName }) {
       const newUidToken = generateUUID();
       // Save it to cookies
       Cookies.set("uid_token", newUidToken, { expires: 365 }); // Cookie expiration in days
-      make_second_get_request();
     }
-  }, []); // Empty dependency array ensures this effect runs once on mount
 
+    // Check if reserved_time and guests are stored in localStorage
+    const storedReservedTime = localStorage.getItem("reserved_time");
+    const storedGuests = localStorage.getItem("guests");
+    if (storedReservedTime && storedGuests) {
+      // If it exists, set it in the state
+      setFormData((formData) => ({ ...formData, reserved_time: storedReservedTime, guests: storedGuests }));
+      setCurrentFormState(1);
+    }
+
+    if(session) {
+      setFormData((formData) => ({ ...formData, full_name: session.user.name, email_address: session.user.email }))
+      setCurrentFormState(1);
+    }
+
+  }, [session]); // Empty dependency array ensures this effect runs once on mount
+  
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+  
   const theme = createTheme({
     palette: {
       mode: "dark",
     },
   });
 
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
 
   function onDateChange(date) {
     const newDate = dayjs(date).format("YYYY-MM-DD");
@@ -111,12 +133,13 @@ export default function Home({ subdomain, storeName }) {
   }
 
   function onHourChange(date) {
-    // const prevDate = dayjs(formData.reserved_time).format("YYYY-MM-DD");
-    // const newHour = dayjs(date).format("HH:mm");
-    // setFormData({
-    //   ...formData,
-    //   reserved_time: dayjs(`${prevDate}T${newHour}`).format("YYYY-MM-DDTHH:mm"),
-    // });
+    console.log('date', date)
+    const prevDate = dayjs(formData.reserved_time).format("YYYY-MM-DD");
+    const newHour = dayjs(date).format("HH:mm");
+    setFormData({
+      ...formData,
+      reserved_time: dayjs(`${prevDate}T${newHour}`).format("YYYY-MM-DDTHH:mm"),
+    });
   }
 
   function onDateLeft() {
@@ -214,7 +237,7 @@ export default function Home({ subdomain, storeName }) {
           label="Hour"
           views={["hours", "minutes"]}
           format="HH:mm"
-          value={formData?.reserved_time}
+          value={dayjs(formData?.reserved_time)}
           onChange={onHourChange}
           variant="filled"
         />
@@ -245,6 +268,9 @@ export default function Home({ subdomain, storeName }) {
 	const onSubmit = () => {
     for (const [key, value] of Object.entries(formData)) {
       if(value === undefined || value === null || value === '') {
+        //TO DO To be changed
+        if(key === 'phone_number' || key ==='birthday') continue;
+        //
         alert('Please fill all fields')
         return;
       }
@@ -269,18 +295,17 @@ export default function Home({ subdomain, storeName }) {
   );
 
   const google_login_button = <div className={styles.google_login_button_container}>
-    <a href="/api/google">
-      <button className={styles.google_button}>
-        <img src={"/images/google_logo.jpeg"} alt="google_icon"/> Google
-      </button>
-    </a>
+    <button onClick={() => signIn('google')} className={styles.google_button}>
+      <img src={"/images/google_logo.jpeg"} alt="google_icon"/>Sign In with Google
+    </button>
   </div>
 
   const login_step = <div className={styles.login_step_container}>
       <ArrowBackIosIcon onClick={() => onNext(0)} style={{fill: "#BB1616", fontSize: 30}} />
     <div className={styles.login_buttons_container}>
       {google_login_button}
-      <Button onClick={() => onNext(2)}>Login as a guest</Button>
+      <Button onClick={() => onNext(2)}>Continue as a guest</Button>
+      {session && session?.role === 'user' && <Button onClick={onSubmit}>Submit</Button>}
     </div>
     <div></div>
   </div>

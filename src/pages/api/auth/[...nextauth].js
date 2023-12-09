@@ -33,7 +33,6 @@ export const authOptions = {
 
           const subdomain_name = req.headers.host.split(".")[0];
 
-          console.log(credentials);
           // Add logic here to look up the user from the credentials supplied
           const user = await Hostess_user.findOne({
             username: credentials.username,
@@ -69,16 +68,24 @@ export const authOptions = {
     // ...add more providers here
   ],
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ session,account, token, user }) {
+      // console.log('session123123', session,account, token, user)
       // Persist the OAuth access_token to the token right after signin
       if (account) {
-        token.accessToken = account.access_token;
+        token.accessToken = account?.access_token;
+        token.provider = account?.provider;
+        token.role = user?.role;
+        token.subdomain_name = user?.subdomain_name;
       }
       return token;
     },
-    async session({ session, token, user }) {
+    async session({ session,token }) {    
+      console.log('tokenasdasdasdasd', token);
       // Send properties to the client, like an access_token from a provider.
       session.accessToken = token.accessToken;
+      session.role = token?.role || 'user';
+      session.subdomain_name = token?.subdomain_name;
+      session.provider = token?.provider;
       return session;
     },
     // async redirect({ url, baseUrl }) {
@@ -89,12 +96,10 @@ export const authOptions = {
     //   return "http://ulliri.dev.al:3000/booking/hostess_dashboard";
     // },
     async signIn({ account, profile}) {
-      // if(!profile){
-      //   throw new Error("No profile");
-      // }
-
-      console.log("account", account, profile);
-
+      if(account?.provider != 'google') return true;
+      if(!profile){
+        throw new Error("No profile");
+      }
       let user_db = await Booking_user.findOne({email: profile.email})
       if(!user_db){
         user_db = await Booking_user.create({

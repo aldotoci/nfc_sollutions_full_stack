@@ -28,8 +28,8 @@ export default async function handler(req, res) {
 
         /* get info from json body */
         let {
-            reserved_time, full_name, phone_number,
-            email_address, guests, birthday 
+            reserved_time, full_name, phone_number=null,
+            email_address, guests, birthday=null,
         } = req.body;
 
 

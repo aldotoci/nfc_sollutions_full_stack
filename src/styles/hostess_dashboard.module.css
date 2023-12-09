@@ -3,6 +3,7 @@
 .dashboard_container{
     color: white !important;
     height: 100%;
+    overflow: hidden;
 }
 .navigator_container{
     display: flex;
@@ -13,7 +14,7 @@
 
 .body_container{
     display: flex;
-    height: fill-available;
+    height: stretch;
 }
 
 .left_nav_container{
@@ -23,12 +24,13 @@
 }
 
 .main_body_container{
-    width: fill-available;
+    width: stretch;
+    overflow: hidden;
 }
 
 .body_header_container{
     height: 80px;
-    width: fill-available;
+    width: stretch;
     border: 1px solid rgba(255, 255, 255, 0.23);
     padding: 10px 15px;
     display: flex;
@@ -38,7 +40,7 @@
 
 .table_and_notifications{
     display: flex;
-    height: fill-available;
+    height: stretch;
 }
 
 .right_notifications_container{
@@ -48,15 +50,15 @@
 }
 
 .restaurant_map_container{
-    width: fill-available;
-    height: fill-available;
+    width: stretch;
+    height: stretch;
     padding: 20px;
     width: 1300px;
 }
 
 .table_and_notifications_container{
     display: flex;
-    height: fill-available;
+    height: stretch;
 
 }
 

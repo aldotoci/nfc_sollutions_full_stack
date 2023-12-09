@@ -1,5 +1,6 @@
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
 import domain_to_hostess from "@/config/domain_to_hostess"
+import { useEffect } from "react";
 
 export async function getServerSideProps(context) {
   const { req } = context;
@@ -17,12 +18,16 @@ export async function getServerSideProps(context) {
 
 export default function Component({subdomain}) {
   const { data: session } = useSession()
-  
-  console.log('session', session)
+  console.log('session',session,subdomain);
 
-  if (session) return subdomain ? domain_to_hostess({subdomain})[subdomain] : <></>
+  if (session){
+    if (session.role !== 'hostess' || session.subdomain_name !== subdomain) signIn()
+    else return subdomain ? domain_to_hostess({subdomain})[subdomain] : <></>
+  }
   // if (session) return <Ulliri subdomain={subdomain} />
   
+  if (session===null) signIn()
   
-  return <button onClick={signIn}>Sing In</button>
+  // return <button onClick={signIn()}>Sing In</button>
+  return <></>
 }

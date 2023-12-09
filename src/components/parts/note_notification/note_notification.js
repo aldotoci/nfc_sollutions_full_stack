@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 
 import styles from "./note_notification.module.css"
 import Box from '@mui/material/Box';
@@ -45,17 +45,27 @@ const accept_modal_style = {
   p: 4,
 }
 
-export default function Component({booking, onReject, onBookAccept, tables}) {
+export default function Component({booking, onReject, onBookAccept, tables, getReservationsOnDateRange}) {
     const [open, setOpen] = useState(false);
     const [acceptModalVisible, setAcceptModalVisible] = useState(false);
     const [selectedTableNumber, setSelectedTableNumber] = useState();
+    const [tables_flat, setTables_flat] = useState(tables.flat().filter((table) => table !== 0))
+
+    function update_tables()  {
+      getReservationsOnDateRange(dayjs(booking?.reserved_time), dayjs().add(2, 'hours')).then((bookings) => {
+        const tablesInBookings = bookings.map((booking) => booking.reserved_table)
+        setTables_flat(tables.flat().filter((table) => table !== 0 && !tablesInBookings.includes(table.toString())))
+      })
+    }
+
+    useEffect(() => {
+      update_tables()
+    }, [booking])
 
     const birthday = dayjs(booking.birthday).format('DD/MM')
     const date = dayjs(booking.reserved_time).format('DD/MM')
     const time = dayjs(booking.reserved_time).format('HH:mm')
 
-    const tables_flat = tables.flat().filter((table) => table !== 0)
-    const list_obs = tables_flat.map((table) => ({label: table, year: table}))
 
     const reject_modal = <Modal
         open={open}
@@ -92,11 +102,12 @@ export default function Component({booking, onReject, onBookAccept, tables}) {
         <Autocomplete
           disablePortal
           id="combo-box-demo"
-          options={list_obs}
+          options={tables_flat}
           sx={{ width: 200 }}
           onSelect={(event) => {
             setSelectedTableNumber(parseInt(event.target.value))
           }}
+          getOptionLabel={(option) => option.toString() || ""}
           renderInput={(params) => <TextField {...params} label="Table number" />}
         />
 
@@ -135,7 +146,10 @@ export default function Component({booking, onReject, onBookAccept, tables}) {
           </CardContent>
           <div className={styles.buttons_container}>
             <CardActions>
-                <Button onClick={() => setAcceptModalVisible(true)} size="small" variant="outlined" color="success">
+                <Button onClick={() => {
+                  setAcceptModalVisible(true)
+                  update_tables()
+                }} size="small" variant="outlined" color="success">
                   Accept
                 </Button>
             </CardActions>

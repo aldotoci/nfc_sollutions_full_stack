@@ -13,16 +13,16 @@ export default async function handler(req, res) {
 
         /* get info from json body */
         let {
-            reserved_time,
+          startSelectedDate,
+          endSelectedDate
         } = req.query;
 
-        const targetDate = dayjs(reserved_time); // Replace with your target date
-
-        console.log('targetDate', targetDate.format('DD/MM/YYYY'));
+        const targetStartDate = dayjs(startSelectedDate); // Replace with your target date
+        const targetEndDate = dayjs(endSelectedDate); // Replace with your target date
 
         // Set the start and end of the target date
-        const startOfDay = targetDate.startOf('day').format('YYYY-MM-DDTHH:mm:ss');
-        const endOfDay = targetDate.endOf('day').format('YYYY-MM-DDTHH:mm:ss')
+        const startOfDay = targetStartDate.startOf('day').format('YYYY-MM-DDTHH:mm:ss');
+        const endOfDay = targetEndDate.format('YYYY-MM-DDTHH:mm:ss')
 
         const bookings = await Booking.find({
             subdomain_name, 
