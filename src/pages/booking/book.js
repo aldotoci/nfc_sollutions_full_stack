@@ -262,6 +262,8 @@ export default function Home({ subdomain, storeName }) {
         return;
       }
     }
+    localStorage.removeItem("reserved_time");
+    localStorage.removeItem("guests");
 		fetch(`/api/booking/book`, {
       method: 'POST',
       headers: {
