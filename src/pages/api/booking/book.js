@@ -53,14 +53,16 @@ export default async function handler(req, res) {
         await Booking.create(new_book);
 
         const socket = io(process.env.Web_Socket_Server)
-        socket.timeout(5000).emit('new_booking', new_book, (err, response) => {
-          if (err) {
-            // the server did not acknowledge the event in the given delay
-          } else {
-            console.log(response.status); // 'ok'
-          }
+        socket.on('connect', () => {
+          socket.timeout(5000).emit('new_booking', new_book, (err, response) => {
+            if (err) {
+              // the server did not acknowledge the event in the given delay
+            } else {
+              console.log(response.status); // 'ok'
+            }
+          });
         });
-
+        socket.disconnect();
         res.status(200).json({ status: 'ok' });
     } catch (error) {
       console.error('Error handeling Request:', error.message);
