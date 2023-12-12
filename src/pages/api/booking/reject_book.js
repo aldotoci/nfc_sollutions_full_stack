@@ -25,7 +25,9 @@ export default async function handler(req, res) {
         await book.save();
 
 
-        const socket = io(process.env.Web_Socket_Server)
+        const socket = io(process.env.Web_Socket_Server, {
+          "transports": ['websocket']
+        })
         socket.timeout(5000).emit('new_booking', book, (err, response) => {
           if (err) {
             // the server did not acknowledge the event in the given delay
