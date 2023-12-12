@@ -1,6 +1,8 @@
 import Booking from '@/models/booking';
 import Subdomains from '@/models/subdomains';
 import io from 'socket.io-client'
+import {send_confirmation_email} from '../utils/utils'
+
 
 // API route to get all users
 export default async function handler(req, res) {
@@ -36,6 +38,7 @@ export default async function handler(req, res) {
           }
         });
 
+        await send_confirmation_email(book);
         res.status(200).json({ status: 'ok' });
     } catch (error) {
       console.error('Error handeling Request:', error.message);

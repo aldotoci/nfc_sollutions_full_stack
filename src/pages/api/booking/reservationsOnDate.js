@@ -1,8 +1,6 @@
 import Booking from '@/models/booking';
 import Subdomains from '@/models/subdomains';
-import io from 'socket.io-client'
 import dayjs from 'dayjs'
-import { MonitorHeart } from '@mui/icons-material';
 
 // API route to get all users
 export default async function handler(req, res) {
@@ -32,8 +30,6 @@ export default async function handler(req, res) {
                 $lt: new Date(endOfDay),
             }
         });
-
-        console.log('bookings', bookings)
 
         // const socket = io('http://localhost:8000')
         // socket.timeout(5000).emit('new_booking', book, (err, response) => {

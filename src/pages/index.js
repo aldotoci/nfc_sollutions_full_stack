@@ -45,7 +45,6 @@ export default function Home({subdomain, links=false, storeName=false}) {
 
     // Check if the uid_token exists in cookies
     const storedUidToken = Cookies.get('uid_token');
-    console.log('storedUidToken', storedUidToken);
     if (storedUidToken) {
       // If it exists, set it in the state
     } else {

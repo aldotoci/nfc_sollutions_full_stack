@@ -1,12 +1,16 @@
-
-
 .card_container{
     margin: 10px;
-    max-width: stretch;
 }
 
 .buttons_container{
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+}
+.alert_container{
+    position: absolute;
+    top: 5%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    z-index: 30999;
 }

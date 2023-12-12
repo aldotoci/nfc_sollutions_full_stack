@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import PropTypes from 'prop-types';
 
 import styles from "./note_notification.module.css"
 import Box from '@mui/material/Box';
@@ -11,6 +12,7 @@ import Modal from '@mui/material/Modal';
 import dayjs from 'dayjs'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+
 
 const bull = (
     <Box
@@ -45,7 +47,7 @@ const accept_modal_style = {
   p: 4,
 }
 
-export default function Component({booking, onReject, onBookAccept, tables, getReservationsOnDateRange}) {
+function Component({booking, onReject, onBookAccept, tables, getReservationsOnDateRange}) {
     const [open, setOpen] = useState(false);
     const [acceptModalVisible, setAcceptModalVisible] = useState(false);
     const [selectedTableNumber, setSelectedTableNumber] = useState();
@@ -165,3 +167,12 @@ export default function Component({booking, onReject, onBookAccept, tables, getR
         </Card>
     )
 }
+
+Component.propTypes = {
+  booking: PropTypes.object.isRequired, // Assuming booking is an object, adjust accordingly
+  onReject: PropTypes.func.isRequired,
+  onBookAccept: PropTypes.func.isRequired,
+  tables: PropTypes.array.isRequired, // Define that tables is expected to be an array
+  getReservationsOnDateRange: PropTypes.func.isRequired,
+};
+export default Component

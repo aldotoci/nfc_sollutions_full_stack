@@ -29,7 +29,8 @@ export default async function handler(req, res) {
         /* get info from json body */
         let {
             reserved_time, full_name, phone_number=null,
-            email_address, guests, birthday=null,
+            email_address=null, guests, birthday=null,
+            reserved_table
         } = req.body;
 
 
@@ -45,12 +46,12 @@ export default async function handler(req, res) {
           email_address,
           guests,
           birthday,
-          reserved_table: null,
           description: '',
-          status: 'open',
+          status: 'reserved',
+          reserved_table
         }
 
-        await Booking.create(new_book);
+        const booking = await Booking.create(new_book);
 
         const socket = io('http://localhost:8000')
         socket.timeout(5000).emit('new_booking', new_book, (err, response) => {
@@ -61,7 +62,7 @@ export default async function handler(req, res) {
           }
         });
 
-        res.status(200).json({ status: 'ok' });
+        res.status(200).json({ status: 'ok', booking });
     } catch (error) {
       console.error('Error handeling Request:', error.message);
       res.status(500).json({ error: 'Internal Server Error' });

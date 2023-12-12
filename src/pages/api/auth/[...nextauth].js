@@ -80,7 +80,6 @@ export const authOptions = {
       return token;
     },
     async session({ session,token }) {    
-      console.log('tokenasdasdasdasd', token);
       // Send properties to the client, like an access_token from a provider.
       session.accessToken = token.accessToken;
       session.role = token?.role || 'user';

@@ -65,14 +65,6 @@ export default function Home({ subdomain, storeName }) {
   }
 
   useEffect(() => {
-    const reserved_time = formData?.reserved_time;
-    const guests = formData?.guests;
-
-    localStorage.setItem("reserved_time", reserved_time);
-    localStorage.setItem("guests", guests);
-  }, [formData])
-
-  useEffect(() => {
     // Function to generate a UUID (you can use your preferred method)
     const generateUUID = () => {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -109,12 +101,7 @@ export default function Home({ subdomain, storeName }) {
       setFormData((formData) => ({ ...formData, full_name: session.user.name, email_address: session.user.email }))
       setCurrentFormState(1);
     }
-
   }, [session]); // Empty dependency array ensures this effect runs once on mount
-  
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
   
   const theme = createTheme({
     palette: {
@@ -275,14 +262,13 @@ export default function Home({ subdomain, storeName }) {
         return;
       }
     }
-
 		fetch(`/api/booking/book`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
-    })
+    }).then(() => setCurrentFormState(3))
 	}
 
   const firstForm = (
@@ -290,7 +276,11 @@ export default function Home({ subdomain, storeName }) {
       <div className="store-link">{date_component}</div>
       <div className="store-link">{hour_component}</div>
       <div className="store-link">{guests}</div>
-      <Button onClick={() => onNext(1)}>Next</Button>
+      <Button onClick={() => {
+        onNext(1)
+        localStorage.setItem("reserved_time", formData?.reserved_time);
+        localStorage.setItem("guests", formData?.guests);
+      }}>Next</Button>
     </>
   );
 
@@ -348,6 +338,19 @@ export default function Home({ subdomain, storeName }) {
         <Button onClick={onSubmit}>Submit</Button>
 			</div>
 	</>;
+
+  const lastInfo = <>
+    <div style={{
+      color: 'white',
+      textAlign: 'center',
+      color: 'white',
+      textAlign: 'center',
+      padding: '30px 10px',
+    }} className={`store-link ${styles.secondFormContainer}`}>
+      Your reservation is submitted!<br/>
+      The confirmation will be sent to you via email&sms shortly. 
+    </div>
+  </>
 
   return (
     <ThemeProvider theme={theme}>
@@ -417,6 +420,7 @@ export default function Home({ subdomain, storeName }) {
             {currentFormState === 0 && firstForm}
             {currentFormState === 1 && login_step}
             {currentFormState === 2 && secondForm}
+            {currentFormState === 3 && lastInfo}
           </div>
         </div>
       </div>

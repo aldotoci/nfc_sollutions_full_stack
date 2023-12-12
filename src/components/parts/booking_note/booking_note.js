@@ -79,7 +79,7 @@ export default function Component({booking, onBookRemove, onBookAccept, tables, 
             Are you sure?
           </Typography>
           <div className={styles.buttons_container}>
-            <Button variant="contained" color="success" onClick={() => onBookRemove(booking)}>
+            <Button variant="contained" color="success" onClick={() => onBookRemove({booking})}>
               Remove
             </Button>
             <Button variant="outlined" color="error" onClick={() => setOpen(false)}>
@@ -130,7 +130,7 @@ export default function Component({booking, onBookRemove, onBookAccept, tables, 
         <Card sx={{ width: 235 }} className={styles.card_container}>
           <CardContent >
               <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                New booking
+                Booking
               </Typography>
               <Typography variant="h5" component="div">
                 {booking.full_name}

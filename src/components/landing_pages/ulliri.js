@@ -28,11 +28,6 @@ export default function Home({links, storeName}) {
         link_type,
       }),
       }).then(response => {
-        if (response.ok) {
-          console.log('click recorded');
-        } else {
-          console.log('click not recorded');
-        }
       }).catch((error) => {});
 
     window.open(link_clicked, '_blank');
@@ -52,11 +47,6 @@ export default function Home({links, storeName}) {
         link_type,
       }),
       }).then(response => {
-        if (response.ok) {
-          console.log('click recorded');
-        } else {
-          console.log('click not recorded');
-        }
       }).catch((error) => {});
 
       router.push(card_id ?  `/booking/book?card_id=${card_id}` : '/booking/book' , undefined, { shallow: true })

@@ -25,11 +25,6 @@ export default function Home({links, storeName}) {
         link_type,
       }),
       }).then(response => {
-        if (response.ok) {
-          console.log('click recorded');
-        } else {
-          console.log('click not recorded');
-        }
       }).catch((error) => {});
 
     window.open(link_clicked, '_blank');

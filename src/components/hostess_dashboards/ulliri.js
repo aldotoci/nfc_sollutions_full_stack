@@ -15,13 +15,16 @@ import BookingNote from "@/components/parts/booking_note/booking_note";
 import Button from "@mui/material/Button";
 import dayjs from "dayjs";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import New_booking_note from "@/components/parts/new_booking_note/new_booking_note";
+import React, { useRef } from 'react';
 
 export default function Component({ subdomain }) {
   const [newBookings, setNewBookings] = useState([]);
-  const [startSelectedDate, setStartSelectedDate] = useState(dayjs());
-  const [endSelectedDate, setEndSelectedDate] = useState(dayjs().add(1, "day"));
+  const [startSelectedDate, setStartSelectedDate] = useState(dayjs().add(-2, 'hours'));
+  const [endSelectedDate, setEndSelectedDate] = useState(dayjs().endOf('day'));
   const [reservationsOnDate, setReservationsOnDate] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
+  const audioRef = useRef(null);
 
   const theme = createTheme({
     palette: {
@@ -53,6 +56,30 @@ export default function Component({ subdomain }) {
 		return bookings
 	}
 
+  const playBellSound = () => {
+    const audio = audioRef.current;
+    if (audio && audio.paused) {
+      audio.play();
+    }
+  };
+
+  function save_booking(booking_data) {
+    fetch("/api/booking/book_from_hostess", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...booking_data, 
+        birthday: booking_data.birthday?.format('YYYY-MM-DDTHH:mm:ss'), 
+        reserved_time: booking_data.reserved_time?.format('YYYY-MM-DDTHH:mm:ss')}),
+    }).then((res) => {
+      return res.json()
+    }).then(({booking}) => {
+      getReservationsOnDateRange(startSelectedDate, endSelectedDate).then((bookings) => [...bookings, booking])
+    })
+  }
+
   useEffect(() => {
     getReservationsOnDateRange(startSelectedDate, endSelectedDate).then((bookings) => {
     	setReservationsOnDate(bookings)
@@ -64,6 +91,8 @@ export default function Component({ subdomain }) {
     socket.emit("joinRoom", subdomain);
     socket.on("new_booking_came", (bookings) => {
       setNewBookings([...bookings]);
+      // Check if the audio element is defined and paused
+      playBellSound()
     });
     socket.emit("new_booking", { subdomain_name: subdomain });
   }, []);
@@ -107,13 +136,12 @@ export default function Component({ subdomain }) {
   };
 
   const onBookRemove = ({ booking }) => {
-    const book_id = booking._id;
     fetch("/api/booking/remove_book", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ book_id }),
+      body: JSON.stringify({ book_id: booking._id }),
     });
     // setSelectedTable((prev) => ({...prev, reservations: prev.reservations.filter((prev_booking) => prev_booking._id !== booking._id)}))
     setReservationsOnDate((prev) =>
@@ -145,12 +173,12 @@ export default function Component({ subdomain }) {
       <div className={styles.left_nav_wrapper}>
         {selectedTable && (
           <div className={styles.left_nav_item_content}>
-            <h2>Selected Table: {selectedTable?.tableNumber}</h2>
-            {selectedTable?.reservations?.length === 0 ? (
-              <h4 className={styles.right_notifs_title}>No bookings</h4>
-            ) : (
-              <h4>Bookings No.: {selectedTable?.tableNumber}</h4>
-            )}
+            <h2 style={{textAlign: 'center'}}>Selected Table: {selectedTable?.tableNumber}</h2>
+            <h4 className={styles.right_notifs_title}>
+              {selectedTable?.reservations?.length === 0 ? 
+                'No bookings' : <>Bookings No.: {selectedTable?.tableNumber}</>
+              }
+            </h4>
             {selectedTable.reservations.map((booking, index) => (
               <BookingNote
                 key={index}
@@ -161,6 +189,14 @@ export default function Component({ subdomain }) {
 								getReservationsOnDateRange={getReservationsOnDateRange}
               />
             ))}
+            <New_booking_note
+              tables={tables}
+              selectedTable={selectedTable}
+              onBookAccept={onBookAccept}
+              getReservationsOnDateRange={getReservationsOnDateRange}
+              save_booking={save_booking}
+              startSelectedDate={startSelectedDate}
+            />
           </div>
         )}
       </div>
@@ -201,8 +237,8 @@ export default function Component({ subdomain }) {
         sx={{ height: "56px" }}
         variant="outlined"
         onClick={() => {
-					setStartSelectedDate(dayjs())
-					setEndSelectedDate(dayjs().add(1, "day"))
+					setStartSelectedDate(dayjs().add(-2, 'day'))
+					setEndSelectedDate(dayjs().endOf('day'))
 				}}
       >
         TODAY
@@ -211,21 +247,21 @@ export default function Component({ subdomain }) {
         sx={{ height: "56px" }}
         variant="outlined"
         onClick={() => {
-					setStartSelectedDate(dayjs())
-					setEndSelectedDate(dayjs().add(1, "week"))
+					setStartSelectedDate(dayjs().startOf('day'))
+					setEndSelectedDate(dayjs().endOf('week'))
 				}}
       >
-        Week
+        This Week
       </Button>
 			<Button
         sx={{ height: "56px" }}
         variant="outlined"
         onClick={() => {
 					setStartSelectedDate(dayjs())
-					setEndSelectedDate(dayjs().add(1, "month"))
+					setEndSelectedDate(dayjs().endOf("month"))
 				}}
       >
-        Week Month
+        This Month
       </Button>
 
     </div>
@@ -239,7 +275,7 @@ export default function Component({ subdomain }) {
             {/* Your content goes here */}
             <div className={styles.tablesContainer}>
               {tables.map((tables, index) => (
-                <div className={styles.tableColumn}>
+                <div key={index} className={styles.tableColumn}>
                   {tables.map((tableNumber, index) => {
                     const reservations = reservationsOnDate.filter(
                       ({ reserved_table }) =>
@@ -248,7 +284,7 @@ export default function Component({ subdomain }) {
                     return (
                       <SitTable
                         onClick={() =>
-                          setSelectedTable({ reservations, tableNumber })
+                          setSelectedTable((d) => d?.tableNumber !== tableNumber ? ({ reservations, tableNumber }) : undefined)
                         }
                         reservations_table={reservations}
                         key={index}
@@ -306,6 +342,7 @@ export default function Component({ subdomain }) {
           </div>
         </LocalizationProvider>
       </ThemeProvider>
+      <audio ref={audioRef} src='/audio/mixkit-achievement-bell-600.wav' />
     </>
   );
 }
