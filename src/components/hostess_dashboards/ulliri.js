@@ -99,6 +99,7 @@ export default function Component({ subdomain }) {
     socket.on('connect', () => {
       console.log('Connected with session ID:', socket.id);
     });
+    
     socket.emit("joinRoom", subdomain);
     socket.emit("new_booking", { subdomain_name: subdomain });
     socket.on("new_booking_came", (bookings) => {
