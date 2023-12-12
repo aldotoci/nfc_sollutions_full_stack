@@ -93,7 +93,9 @@ export default function Component({ subdomain }) {
   }, [startSelectedDate, endSelectedDate]);
 
   useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server);
+    const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server, {
+      transports: [ "websocket", "polling" ]
+    });
     socket.on('connect', () => {
       console.log('Connected with session ID:', socket.id);
     });
