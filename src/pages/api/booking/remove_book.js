@@ -1,6 +1,5 @@
 import Booking from '@/models/booking';
 import Subdomains from '@/models/subdomains';
-import io from 'socket.io-client'
 
 // API route to get all users
 export default async function handler(req, res) {
@@ -24,14 +23,6 @@ export default async function handler(req, res) {
         book.status = 'closed';
 
         await book.save();
-        // const socket = io(process.env.Web_Socket_Server)
-        // socket.timeout(5000).emit('new_booking', book, (err, response) => {
-        //   if (err) {
-        //     // the server did not acknowledge the event in the given delay
-        //   } else {
-        //     console.log(response.status); // 'ok'
-        //   }
-        // });
 
         res.status(200).json({ status: 'ok' });
     } catch (error) {

@@ -60,8 +60,12 @@ export default function Component({ subdomain }) {
 
   const playBellSound = () => {
     const audio = audioRef.current;
-    if (audio && audio.paused) {
-      audio.play();
+    try{
+      if (audio && audio.paused) {
+        audio.play();
+      }
+    }catch(err){
+      console.log('Error: ', err)
     }
   };
 
@@ -89,16 +93,15 @@ export default function Component({ subdomain }) {
   }, [startSelectedDate, endSelectedDate]);
 
   useEffect(() => {
-    console.log('process.env.Socket_Server', process.env.NEXT_PUBLIC_Web_Socket_Server)
     const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server);
     socket.on('connect', () => {
       console.log('Connected with session ID:', socket.id);
       socket.emit("joinRoom", subdomain);
   		socket.emit("new_booking", { subdomain_name: subdomain });
-      socket.on("new_booking_came", (bookings) => {
-        setNewBookings([...bookings]);
-        playBellSound()
-      });
+    });
+    socket.on("new_booking_came", (bookings) => {
+      setNewBookings([...bookings]);
+      playBellSound()
     });
   }, []);
 
