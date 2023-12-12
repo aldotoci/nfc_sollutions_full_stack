@@ -53,7 +53,7 @@ export default async function handler(req, res) {
 
         const booking = await Booking.create(new_book);
 
-        const socket = io('http://localhost:8000')
+        const socket = io(process.env.Web_Socket_Server)
         socket.timeout(5000).emit('new_booking', new_book, (err, response) => {
           if (err) {
             // the server did not acknowledge the event in the given delay

@@ -17,6 +17,8 @@ import dayjs from "dayjs";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import New_booking_note from "@/components/parts/new_booking_note/new_booking_note";
 import React, { useRef } from 'react';
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env.local' });
 
 export default function Component({ subdomain }) {
   const [newBookings, setNewBookings] = useState([]);
@@ -87,7 +89,8 @@ export default function Component({ subdomain }) {
   }, [startSelectedDate, endSelectedDate]);
 
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    console.log('process.env.Socket_Server', process.env.NEXT_PUBLIC_Web_Socket_Server)
+    const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server);
     socket.emit("joinRoom", subdomain);
     socket.on("new_booking_came", (bookings) => {
       setNewBookings([...bookings]);

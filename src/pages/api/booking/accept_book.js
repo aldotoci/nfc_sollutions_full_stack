@@ -3,7 +3,6 @@ import Subdomains from '@/models/subdomains';
 import io from 'socket.io-client'
 import {send_confirmation_email} from '../utils/utils'
 
-
 // API route to get all users
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -29,7 +28,7 @@ export default async function handler(req, res) {
         await book.save();
 
 
-        const socket = io('http://localhost:8000')
+        const socket = io(process.env.Web_Socket_Server)
         socket.timeout(5000).emit('new_booking', book, (err, response) => {
           if (err) {
             // the server did not acknowledge the event in the given delay
