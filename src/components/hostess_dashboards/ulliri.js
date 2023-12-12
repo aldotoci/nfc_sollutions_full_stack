@@ -93,13 +93,11 @@ export default function Component({ subdomain }) {
   }, [startSelectedDate, endSelectedDate]);
 
   useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server, {
-      transports: [ "websocket", "polling" ]
-    });
+    const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server);
     socket.on('connect', () => {
       console.log('Connected with session ID:', socket.id);
     });
-    
+
     socket.emit("joinRoom", subdomain);
     socket.emit("new_booking", { subdomain_name: subdomain });
     socket.on("new_booking_came", (bookings) => {

@@ -49,9 +49,7 @@ export default async function handler(req, res) {
         }
 
         await Booking.create(new_book);
-        const socket = io(process.env.Web_Socket_Server, {
-          transports: [ "websocket", "polling" ]
-        })
+        const socket = io(process.env.Web_Socket_Server)
         socket.emit('new_booking', new_book);
         // socket.disconnect();
         res.status(200).json({ status: 'ok' });
