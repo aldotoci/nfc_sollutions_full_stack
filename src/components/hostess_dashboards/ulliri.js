@@ -91,6 +91,9 @@ export default function Component({ subdomain }) {
   useEffect(() => {
     console.log('process.env.Socket_Server', process.env.NEXT_PUBLIC_Web_Socket_Server)
     const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server);
+    socket.on('connect', () => {
+      console.log('Connected with session ID:', socket.id);
+    });
     socket.emit("joinRoom", subdomain);
     socket.on("new_booking_came", (bookings) => {
       setNewBookings([...bookings]);
