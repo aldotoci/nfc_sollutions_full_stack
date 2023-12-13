@@ -106,6 +106,7 @@ export default function Component({ subdomain }) {
     });
     return () => { socket.disconnect() };
   }, []);
+  
 
   //////////////// functions /////////////////////
   const onNewNotReject = (booking) => {
