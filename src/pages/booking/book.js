@@ -91,15 +91,15 @@ export default function Home({ subdomain, storeName }) {
     // Check if reserved_time and guests are stored in localStorage
     const storedReservedTime = localStorage.getItem("reserved_time");
     const storedGuests = localStorage.getItem("guests");
+    console.log('storedReservedTime', storedReservedTime)
     if (storedReservedTime && storedGuests) {
       // If it exists, set it in the state
       setFormData((formData) => ({ ...formData, reserved_time: storedReservedTime, guests: storedGuests }));
       setCurrentFormState(1);
-    }
-
-    if(session) {
-      setFormData((formData) => ({ ...formData, full_name: session.user.name, email_address: session.user.email }))
-      setCurrentFormState(1);
+      if(session) {
+        setFormData((formData) => ({ ...formData, full_name: session.user.name, email_address: session.user.email }))
+        setCurrentFormState(1);
+      }
     }
   }, [session]); // Empty dependency array ensures this effect runs once on mount
   
