@@ -82,7 +82,7 @@ export default function Component({ subdomain }) {
     }).then((res) => {
       return res.json()
     }).then(({booking}) => {
-      getReservationsOnDateRange(startSelectedDate, endSelectedDate).then((bookings) => [...bookings, booking])
+      setReservationsOnDate(bookings => [...bookings, booking])
     })
   }
 
@@ -134,16 +134,13 @@ export default function Component({ subdomain }) {
       body: JSON.stringify({ book_id, reserved_table }),
     });
     if (new_book)
-      setNewBookings((prev) => [
-        ...prev.filter((prev_booking) => prev_booking._id !== booking._id),
-      ]);
-    else {
-      // setSelectedTable((prev) => ({...prev, reservations: prev.reservations.filter((prev_booking) => prev_booking._id !== booking._id)}))
-      setReservationsOnDate((prev) => [
-        { ...booking, reserved_table: reserved_table.toString() },
-        ...prev.filter((prev_booking) => prev_booking._id !== booking._id),
-      ]);
-    }
+      setNewBookings((prev) => [...prev.filter((prev_booking) => prev_booking._id !== booking._id)]);
+    
+    setReservationsOnDate((prev) => [
+      { ...booking, reserved_table: reserved_table.toString() },
+      ...prev.filter((prev_booking) => prev_booking._id !== booking._id),
+    ]);
+    
   };
 
   const onBookRemove = ({ booking }) => {
@@ -192,7 +189,7 @@ export default function Component({ subdomain }) {
             </h4>
             {selectedTable.reservations.map((booking, index) => (
               <BookingNote
-                key={index}
+                key={booking._id}
                 booking={booking}
                 tables={tables}
                 onBookRemove={onBookRemove}
@@ -219,7 +216,7 @@ export default function Component({ subdomain }) {
       <h2 className={styles.right_notifs_title}>New Bookings</h2>
       {newBookings.map((booking, index) => (
         <Note_notification
-          key={index}
+          key={booking._id}
           booking={booking}
           tables={tables}
           onReject={onNewNotReject}
@@ -236,12 +233,14 @@ export default function Component({ subdomain }) {
         onChange={(newValue) => setStartSelectedDate(newValue)}
         value={startSelectedDate}
 				maxDateTime={endSelectedDate}
+        format="DD/MM/YYYY HH:mm"
 				label="Start Date and Time"
 			/>
 			<DateTimePicker
         onChange={(newValue) => setEndSelectedDate(newValue)}
         value={endSelectedDate}
 				minDateTime={startSelectedDate}
+        format="DD/MM/YYYY HH:mm"
 				label="End Date and Time"
 			/>
       <Button

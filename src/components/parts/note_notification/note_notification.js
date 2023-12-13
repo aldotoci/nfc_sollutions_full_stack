@@ -34,7 +34,6 @@ const modal_style = {
   boxShadow: 24,
   p: 4,
 };
-
 const accept_modal_style = {
   position: 'absolute',
   top: '50%',
@@ -71,7 +70,7 @@ function Component({booking, onReject, onBookAccept, tables, getReservationsOnDa
 
     const reject_modal = <Modal
         open={open}
-        onClose={() => setOpen(true)}
+        onClose={() => setOpen(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -92,7 +91,7 @@ function Component({booking, onReject, onBookAccept, tables, getReservationsOnDa
 
     const accept_modal = <Modal
       open={acceptModalVisible}
-      onClose={() => setOpen(true)}
+      onClose={() => setAcceptModalVisible(false)}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
