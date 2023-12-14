@@ -7,7 +7,7 @@ const emailConfig = {
   // port: 465,
   // secure: false,
   
-  port: 465,
+  port: 587,
   secure: true, // Use SSL/TLS
 
   auth: {
