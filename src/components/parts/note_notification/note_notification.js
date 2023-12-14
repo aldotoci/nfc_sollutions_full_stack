@@ -13,7 +13,6 @@ import dayjs from 'dayjs'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 
-
 const bull = (
     <Box
       component="span"
@@ -126,6 +125,19 @@ function Component({booking, onReject, onBookAccept, tables, getReservationsOnDa
       </Box>
     </Modal>
 
+    // Parse the input date using dayjs
+    const parsedDate = dayjs(booking.birthday, { format: 'DD/MM' });
+    console.log('parsedDate', parsedDate.format('DD/MM/YYYY'))
+
+    // Get the current date
+    const currentDate = dayjs();
+
+    // Calculate the difference in months
+    const monthsDifference = currentDate.diff(parsedDate, 'day');
+
+    // Check if the difference is within the desired range (in this case, 2 months)
+    const isWithinTwoMonths = parsedDate.unix() < currentDate.unix() ? false : (Math.abs(monthsDifference) <= 60 && Math.abs(monthsDifference) >= 0);
+
     return (
         <Card sx={{ width: 235 }} className={styles.card_container}>
           <CardContent >
@@ -140,9 +152,9 @@ function Component({booking, onReject, onBookAccept, tables, getReservationsOnDa
               </Typography>
               <Typography variant="body2">
                 {/* {booking?.description || 'No description'} */}
-                Reserved time: {time} {bull} {date}
+                Reserved time:<br /> {time} {bull} {date}
                 <br />
-                Clients birthday: {birthday}
+                {isWithinTwoMonths ? 'Birthday coming soon: '+birthday : ''}
               </Typography>
           </CardContent>
           <div className={styles.buttons_container}>

@@ -79,7 +79,9 @@ export default function Component({booking, onBookRemove, onBookAccept, tables, 
             Are you sure?
           </Typography>
           <div className={styles.buttons_container}>
-            <Button variant="contained" color="success" onClick={() => onBookRemove({booking})}>
+            <Button variant="contained" color="success" onClick={() => {
+                onBookRemove({booking})
+              }}>
               Remove
             </Button>
             <Button variant="outlined" color="error" onClick={() => setOpen(false)}>
@@ -126,6 +128,18 @@ export default function Component({booking, onBookRemove, onBookAccept, tables, 
       </Box>
     </Modal>
 
+    // Parse the input date using dayjs
+    const parsedDate = dayjs(booking.birthday, { format: 'DD/MM' });
+
+    // Get the current date
+    const currentDate = dayjs();
+
+    // Calculate the difference in months
+    const monthsDifference = currentDate.diff(parsedDate, 'day');
+
+    // Check if the difference is within the desired range (in this case, 2 months)
+    const isWithinTwoMonths = parsedDate.unix() < currentDate.unix() ? false : (Math.abs(monthsDifference) <= 60 && Math.abs(monthsDifference) >= 0);
+
     return (
         <Card sx={{ width: 235 }} className={styles.card_container}>
           <CardContent >
@@ -142,7 +156,7 @@ export default function Component({booking, onBookRemove, onBookAccept, tables, 
                 {/* {booking?.description || 'No description'} */}
                 Reserved time: {time} {bull} {date}
                 <br />
-                Clients birthday: {birthday}
+                {isWithinTwoMonths ? 'Birthday coming soon: '+birthday : ''}
               </Typography>
           </CardContent>
           <div className={styles.buttons_container}>

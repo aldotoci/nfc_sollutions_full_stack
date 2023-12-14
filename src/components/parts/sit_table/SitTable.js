@@ -82,14 +82,13 @@ export const SitTable = ({
   const table = (
     <div
       id={table_id}
-      className={`${styles.container} ${tableNumber === selectedTable?.tableNumber ? styles.container_selected : ""}`}
-      style={{
-        borderColor: reservations_table.length > 0 ? "#ff0000" : "#ffffff",
-      }}
+      // className={`${styles.container} ${tableNumber === selectedTable?.tableNumber ? styles.container_selected : ""}`}
+      className={`${styles.container}`}
+
     >
       {tableNumber !== 0 && (
         <div className={styles.wrapper} onClick={onClick}>
-          <DinnerTableSvg width={tableNumber === selectedTable?.tableNumber ? 80 : 100} height={tableNumber === selectedTable?.tableNumber ? 80 : 100} />
+          <DinnerTableSvg width={tableNumber === selectedTable?.tableNumber ? 80 : 90} height={tableNumber === selectedTable?.tableNumber ? 60 : 80} />
           <div className={styles.reservations_count_wrapper}>
             <div className={styles.table_number}>No. {tableNumber}</div>
             <div className={styles.reservations_count}>
@@ -102,8 +101,14 @@ export const SitTable = ({
     </div>
   );
 
-  return tableNumber === selectedTable?.tableNumber ?
-    <div className={styles.selected_table_container}>
+  return tableNumber === selectedTable?.tableNumber || true ?
+    <div 
+      // className={styles.selected_table_container}
+      className={`${styles.selected_table_container} ${tableNumber === selectedTable?.tableNumber ? styles.container_selected : ""}`}
+      style={{...(
+        reservations_table.length > 0 ? {borderColor: "#ff0000"} : {}
+      )}}
+    >
       {table}
     </div>
   : table;

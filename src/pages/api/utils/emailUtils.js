@@ -2,15 +2,17 @@ const nodemailer = require('nodemailer');
 
 // Email configuration
 const emailConfig = {
-  host: 'mx1.netim.net',
+  host: 'mail1.netim.hosting',
+
+  // port: 465,
+  // secure: false,
+  
   port: 465,
   secure: true, // Use SSL/TLS
+
   auth: {
     user: 'support@22nd.al',
     pass: 'P1mYba5S783Z',
-  },
-  tls: {
-    rejectUnauthorized: false, // Use with caution, only for testing purposes
   },
 };
 
@@ -23,7 +25,7 @@ export const sendEmail = async ({to, subject,text}) => {
     // Email options
     const mailOptions = {
       from: 'support@22nd.al',
-      to, // Replace with the recipient's email address
+      to,
       subject,
       text,
     };

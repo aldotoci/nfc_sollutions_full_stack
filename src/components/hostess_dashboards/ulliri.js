@@ -18,16 +18,22 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import New_booking_note from "@/components/parts/new_booking_note/new_booking_note";
 import React, { useRef } from 'react';
 import dotenv from 'dotenv';
+import Alert from '@mui/material/Alert';
 dotenv.config({ path: '../.env.local' });
 
 export default function Component({ subdomain }) {
+  // **** STATES **** //
   const [newBookings, setNewBookings] = useState([]);
   const [startSelectedDate, setStartSelectedDate] = useState(dayjs().add(-2, 'hours'));
   const [endSelectedDate, setEndSelectedDate] = useState(dayjs().endOf('day'));
   const [reservationsOnDate, setReservationsOnDate] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
+  const [alertVisible, setAlertVisible] = useState(false)
+
+  // **** REFS **** //
   const audioRef = useRef(null);
 
+  // **** CONFIGS **** //
   const theme = createTheme({
     palette: {
       mode: "dark",
@@ -41,18 +47,8 @@ export default function Component({ subdomain }) {
     [10, 0, 0, 0],
   ];
 
-  useEffect(() => {
-    if (selectedTable) {
-      setSelectedTable((prev) => ({
-        ...prev,
-        reservations: reservationsOnDate.filter(
-          ({ reserved_table }) => parseInt(reserved_table) === prev.tableNumber
-        ),
-      }));
-    }
-  }, [reservationsOnDate]);
-
-	async function getReservationsOnDateRange(startSelectedDate, endSelectedDate){
+  //////////////// functions /////////////////////
+	const getReservationsOnDateRange = async (startSelectedDate, endSelectedDate) => {
 		const res = await fetch(`/api/booking/reservationsOnDate?startSelectedDate=${startSelectedDate.format('YYYY-MM-DDTHH:mm:ss')}&endSelectedDate=${endSelectedDate.format('YYYY-MM-DDTHH:mm:ss')}`)
 		const bookings = (await(res.json())).bookings
 		return bookings
@@ -69,7 +65,7 @@ export default function Component({ subdomain }) {
     }
   };
 
-  function save_booking(booking_data) {
+  const save_booking = (booking_data) => {
     fetch("/api/booking/book_from_hostess", {
       method: "POST",
       headers: {
@@ -84,31 +80,10 @@ export default function Component({ subdomain }) {
     }).then(({booking}) => {
       setReservationsOnDate(bookings => [...bookings, booking])
     })
+    setAlertVisible(`Booking was saved to table ${booking_data?.reserved_table} successfully!`)
+    setTimeout(() => setAlertVisible(false), 3000)
   }
 
-  useEffect(() => {
-    getReservationsOnDateRange(startSelectedDate, endSelectedDate).then((bookings) => {
-    	setReservationsOnDate(bookings)
-    })
-  }, [startSelectedDate, endSelectedDate]);
-
-  useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server);
-    socket.on('connect', () => {
-      console.log('Connected with session ID:', socket.id);
-    });
-
-    socket.emit("joinRoom", subdomain);
-    socket.emit("new_booking", { subdomain_name: subdomain });
-    socket.on("new_booking_came", (bookings) => {
-      setNewBookings([...bookings]);
-      playBellSound()
-    });
-    return () => { socket.disconnect() };
-  }, []);
-  
-
-  //////////////// functions /////////////////////
   const onNewNotReject = (booking) => {
     const book_id = booking._id;
     fetch("/api/booking/reject_book", {
@@ -118,10 +93,11 @@ export default function Component({ subdomain }) {
       },
       body: JSON.stringify({ book_id }),
     });
-
     setNewBookings((prev) => [
       ...prev.filter((prev_booking) => prev_booking._id !== booking._id),
     ]);
+    setAlertVisible(`Booking from ${booking?.full_name} was rejected!`)
+    setTimeout(() => setAlertVisible(false), 3000)
   };
 
   const onBookAccept = ({ booking, reserved_table, new_book = true }) => {
@@ -133,14 +109,21 @@ export default function Component({ subdomain }) {
       },
       body: JSON.stringify({ book_id, reserved_table }),
     });
-    if (new_book)
+    if (new_book){
       setNewBookings((prev) => [...prev.filter((prev_booking) => prev_booking._id !== booking._id)]);
-    
+      setAlertVisible(`Booking saved to table ${reserved_table} successfully!`)
+      setTimeout(() => setAlertVisible(false), 3000)
+    }
+    else{
+      setAlertVisible(`Booking moved to table ${reserved_table} successfully!`)
+      setTimeout(() => setAlertVisible(false), 3000)
+    }
+
     setReservationsOnDate((prev) => [
       { ...booking, reserved_table: reserved_table.toString() },
       ...prev.filter((prev_booking) => prev_booking._id !== booking._id),
     ]);
-    
+
   };
 
   const onBookRemove = ({ booking }) => {
@@ -155,7 +138,11 @@ export default function Component({ subdomain }) {
     setReservationsOnDate((prev) =>
       prev.filter((prev_booking) => prev_booking._id !== booking._id)
     );
+    setAlertVisible('Booking removed successfully!')
+    setTimeout(() => setAlertVisible(false), 3000)
   };
+
+  // **** COMPONENTS **** //
 
   const navigator_header = (
     <div className={styles.navigator_container}>
@@ -235,6 +222,7 @@ export default function Component({ subdomain }) {
 				maxDateTime={endSelectedDate}
         format="DD/MM/YYYY HH:mm"
 				label="Start Date and Time"
+        slotProps={{ textField: { size: 'small' } }}
 			/>
 			<DateTimePicker
         onChange={(newValue) => setEndSelectedDate(newValue)}
@@ -242,9 +230,10 @@ export default function Component({ subdomain }) {
 				minDateTime={startSelectedDate}
         format="DD/MM/YYYY HH:mm"
 				label="End Date and Time"
+        slotProps={{ textField: { size: 'small' } }}
 			/>
       <Button
-        sx={{ height: "56px" }}
+        sx={{ height: "40px" }}
         variant="outlined"
         onClick={() => {
 					setStartSelectedDate(dayjs().add(-2, 'day'))
@@ -254,7 +243,7 @@ export default function Component({ subdomain }) {
         TODAY
       </Button>
 			<Button
-        sx={{ height: "56px" }}
+        sx={{ height: "40px" }}
         variant="outlined"
         onClick={() => {
 					setStartSelectedDate(dayjs().startOf('day'))
@@ -264,7 +253,7 @@ export default function Component({ subdomain }) {
         This Week
       </Button>
 			<Button
-        sx={{ height: "56px" }}
+        sx={{ height: "39px" }}
         variant="outlined"
         onClick={() => {
 					setStartSelectedDate(dayjs())
@@ -273,7 +262,6 @@ export default function Component({ subdomain }) {
       >
         This Month
       </Button>
-
     </div>
   );
 
@@ -333,6 +321,40 @@ export default function Component({ subdomain }) {
     </div>
   );
 
+  // **** USE EFFECTS **** //
+
+  useEffect(() => {
+    if (selectedTable) {
+      setSelectedTable((prev) => ({
+        ...prev,
+        reservations: reservationsOnDate.filter(
+          ({ reserved_table }) => parseInt(reserved_table) === prev.tableNumber
+        ),
+      }));
+    }
+  }, [reservationsOnDate]);
+
+  useEffect(() => {
+    getReservationsOnDateRange(startSelectedDate, endSelectedDate).then((bookings) => {
+    	setReservationsOnDate(bookings)
+    })
+  }, [startSelectedDate, endSelectedDate]);
+
+  useEffect(() => {
+    const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server);
+    socket.on('connect', () => {
+      console.log('Connected with session ID:', socket.id);
+    });
+
+    socket.emit("joinRoom", subdomain);
+    socket.emit("new_booking", { subdomain_name: subdomain });
+    socket.on("new_booking_came", (bookings) => {
+      setNewBookings([...bookings]);
+      playBellSound()
+    });
+    return () => { socket.disconnect() };
+  }, []);
+
   return (
     <>
       <Head>
@@ -351,6 +373,11 @@ export default function Component({ subdomain }) {
             {body}
           </div>
         </LocalizationProvider>
+        <div style={{display: !!alertVisible ? 'block'  : 'none'}} className={styles.alert_container}>
+          <Alert severity="success">
+            {alertVisible}
+          </Alert>             
+        </div>
       </ThemeProvider>
       <audio ref={audioRef} src='/audio/mixkit-achievement-bell-600.wav' />
     </>

@@ -53,7 +53,6 @@ const accept_modal_style = {
 export default function Component({save_booking, selectedTable, startSelectedDate}) {
     const [open, setOpen] = useState(false);
     const [acceptModalVisible, setAcceptModalVisible] = useState(false);
-    const [alertVisible, setAlertVisible] = useState(false)
     const default_booking_data = {
       reserved_time: dayjs(startSelectedDate).add(2, 'hour'),
       reserved_table: selectedTable?.tableNumber,
@@ -102,8 +101,6 @@ export default function Component({save_booking, selectedTable, startSelectedDat
                 save_booking(booking_data)
                 setAcceptModalVisible(false)
                 setBooking_data({...default_booking_data})
-                setAlertVisible(true)
-                setTimeout(() => setAlertVisible(false), 3000)
               }}>
             Save
           </Button>          
@@ -159,6 +156,7 @@ export default function Component({save_booking, selectedTable, startSelectedDat
                 <DateTimePicker 
                     label="Reservation Time" sx={{mb: 2}} 
                     value={booking_data.reserved_time}
+                    format='DD/MM/YYYY HH:mm'
                     onChange={(value) => setBooking_data({...booking_data, reserved_time: value})}
                 />
                 <MobileDatePicker 
@@ -192,12 +190,6 @@ export default function Component({save_booking, selectedTable, startSelectedDat
           </div>
           {reset_modal}
           {save_modal}
-          {/* style={{position: 'absolute', top: 5, left:'50%', right:'50%', transform: 'translate(-50%, -50%)'}} */}
-          <div style={{display: alertVisible ? 'block'  : 'none'}} className={styles.alert_container}>
-            <Alert severity="success">
-              Booking saved successfully!
-            </Alert>             
-          </div>
         </Card>
     )
 }

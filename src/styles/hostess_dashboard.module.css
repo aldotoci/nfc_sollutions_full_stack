@@ -8,7 +8,7 @@
 .navigator_container{
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.23);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.23);
     padding: 5px 20px;
 }
 
@@ -19,7 +19,7 @@
 
 .left_nav_container{
     width: 340px;
-    border-right: solid 1px rgba(255, 255, 255, 0.23);
+    border-right: solid 2px rgba(255, 255, 255, 0.23);
     padding: 10px;
     overflow: auto;
     margin-bottom: 50px;
@@ -31,13 +31,13 @@
 }
 
 .body_header_container{
-    height: 80px;
     width: stretch;
-    border: 1px solid rgba(255, 255, 255, 0.23);
-    padding: 10px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.23);
+    padding: 17px 15px;
     display: flex;
     flex-direction: row;
     gap: 20px;
+    align-items: center;
 }
 
 .table_and_notifications{
@@ -68,7 +68,7 @@
 }
 
 .restaurant_map_wrapper{
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
     padding: 20px;
 }
 
@@ -84,4 +84,12 @@
 .right_notifs_title{
     text-align: center;
     margin-bottom: 30px;
+}
+
+.alert_container{
+    position: absolute;
+    top: 5%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    z-index: 30999;
 }

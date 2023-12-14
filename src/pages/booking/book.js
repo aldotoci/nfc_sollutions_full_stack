@@ -275,9 +275,11 @@ export default function Home({ subdomain, storeName }) {
 
   const firstForm = (
     <>
-      <div className="store-link">{date_component}</div>
-      <div className="store-link">{hour_component}</div>
-      <div className="store-link">{guests}</div>
+      <div className={styles?.inputsContainer}>
+        <div className="store-link">{date_component}</div>
+        <div className="store-link">{hour_component}</div>
+        <div className="store-link">{guests}</div>
+      </div>
       <Button onClick={() => {
         onNext(1)
         localStorage.setItem("reserved_time", formData?.reserved_time);
@@ -356,8 +358,7 @@ export default function Home({ subdomain, storeName }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="store__container">
-        <div className="store-layout">
+      <div className="store-layout-booking">
           <div
             data-v-7578ada4=""
             id="fixed-background"
@@ -418,13 +419,12 @@ export default function Home({ subdomain, storeName }) {
               </div>
             </div>
           </div>
-          <div className={`store-content ${styles.personal_info_container}`}>
+          <div className={`store-content-booking ${styles.personal_info_container} ${styles?.formContainer}`}>
             {currentFormState === 0 && firstForm}
             {currentFormState === 1 && login_step}
             {currentFormState === 2 && secondForm}
             {currentFormState === 3 && lastInfo}
           </div>
-        </div>
       </div>
     </ThemeProvider>
   );
