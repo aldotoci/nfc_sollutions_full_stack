@@ -390,11 +390,6 @@ body, div {
     background-color: #000 !important;
     padding: 20px !important;
     border: 1px solid rgba(255, 255, 255, 0.23) !important;
-    z-index: 10 !important;
-    /* position: absolute; */
-    /* position: fixed !important; */
-    /* margin-top: 27.3rem !important;
-    margin-left: 3.3rem !important; */
 }
 .react-international-phone-country-selector-dropdown__list-item .react-international-phone-country-selector-dropdown__list-item--selected .react-international-phone-country-selector-dropdown__list-item--focused{
     background-color: black;
@@ -405,6 +400,7 @@ body, div {
     color: white !important;
     padding: 20px !important;
     border-color: rgba(255, 255, 255, 0.23) !important;
+    display: flex !important;
 
 }
 .react-international-phone-flag-emoji .react-international-phone-country-selector-button__flag-emoji{
@@ -439,11 +435,14 @@ body, div {
 
 .store-layout-booking{
     height: 100%;
+    max-width: 800px;
+    flex-wrap: wrap;
+    display: flex;
+    align-content: space-between;
 }
 
 .store-content-booking{
     background-color: black;
-    height: -webkit-fill-available;
-    width: -webkit-fill-available;
-    padding: 0 20px 20px !important;
+    width: stretch;
+    padding: 0 20px 0px !important;
 }

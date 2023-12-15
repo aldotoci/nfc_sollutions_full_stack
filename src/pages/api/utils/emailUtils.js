@@ -1,19 +1,22 @@
 const nodemailer = require('nodemailer');
 
 // Email configuration
+// const emailConfig = {
+//   host: 'mail1.netim.hosting',
+//   port: 465,
+//   secure: true, // Use SSL/TLS
+//   auth: {
+//     user: 'support@22nd.al',
+//     pass: 'P1mYba5S783Z',
+//   },
+// };
+
 const emailConfig = {
-  host: 'mail1.netim.hosting',
-
-  // port: 465,
-  // secure: false,
-  
-  port: 587,
-  secure: true, // Use SSL/TLS
-
+  service: 'gmail',
   auth: {
-    user: 'support@22nd.al',
-    pass: 'P1mYba5S783Z',
-  },
+    user: 'reservetion.22nd@gmail.com',
+    pass: 'cokj yznq deyf enuo'
+  }
 };
 
 // Create a transporter with the email configuration
@@ -24,7 +27,7 @@ export const sendEmail = async ({to, subject,text}) => {
   try {
     // Email options
     const mailOptions = {
-      from: 'support@22nd.al',
+      from: 'reservetion.22nd@gmail.com',
       to,
       subject,
       text,

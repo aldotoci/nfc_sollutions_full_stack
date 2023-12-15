@@ -252,6 +252,14 @@ export default function Home({ subdomain, storeName }) {
 		setCurrentFormState(nextFormN);
 	}
 
+  const isValidEmail = (email) => {
+    // Regular expression for a basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+    // Test the email against the regular expression
+    return emailRegex.test(email);
+  }
+
 	const onSubmit = () => {
     for (const [key, value] of Object.entries(formData)) {
       if(value === undefined || value === null || value === '') {
@@ -262,6 +270,10 @@ export default function Home({ subdomain, storeName }) {
         return;
       }
     }
+    if(!isValidEmail(formData?.email_address)) {
+      return alert('Please enter a valid email address')
+    }
+
     localStorage.removeItem("reserved_time");
     localStorage.removeItem("guests");
 		fetch(`/api/booking/book`, {
@@ -295,11 +307,12 @@ export default function Home({ subdomain, storeName }) {
   </div>
 
   const login_step = <div className={styles.login_step_container}>
-      <ArrowBackIosIcon onClick={() => onNext(0)} style={{fill: "#BB1616", fontSize: 30}} />
+      {/* <ArrowBackIosIcon onClick={() => onNext(0)} style={{fill: "#BB1616", fontSize: 30}} /> */}
     <div className={styles.login_buttons_container}>
+      <Button onClick={() => onNext(0)}>Go back</Button>
       {google_login_button}
-      <Button onClick={() => onNext(2)}>Continue as a guest</Button>
       {session && session?.role === 'user' && <Button onClick={onSubmit}>Submit</Button>}
+      <Button onClick={() => onNext(2)}>Continue as a guest</Button>
     </div>
     <div></div>
   </div>
@@ -340,6 +353,7 @@ export default function Home({ subdomain, storeName }) {
         <ArrowBackIosIcon onClick={() => onNext(1)} style={{fill: "#BB1616", fontSize: 30}} />
       	{/* <Button className={styles?.prevButton} onClick={() => onNext(0)}>Prev</Button> */}
         <Button onClick={onSubmit}>Submit</Button>
+        <div style={{width: 20}}></div>
 			</div>
 	</>;
 
