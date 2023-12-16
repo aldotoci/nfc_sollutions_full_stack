@@ -12,6 +12,7 @@ import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import styles from "@/styles/book.module.css";
 import { TextField } from "@mui/material";
+import io from "socket.io-client";
 
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
@@ -282,7 +283,12 @@ export default function Home({ subdomain, storeName }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
-    }).then(() => setCurrentFormState(3))
+    }).then(() => {
+      setCurrentFormState(3)
+      const socket = io(process.env.NEXT_PUBLIC_Web_Socket_Server);
+      socket.on('connect', () => {});
+      socket.emit('new_booking', {...formData, subdomain_name: subdomain});  
+    })
 	}
 
   const firstForm = (
