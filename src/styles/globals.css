@@ -99,6 +99,7 @@ body, div {
     width: 100% !important;
     overflow: visible;
     aspect-ratio: 1.125;
+    object-fit: cover;
 }
 
 .d-none {
