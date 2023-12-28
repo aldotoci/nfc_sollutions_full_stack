@@ -1,15 +1,28 @@
 import Booking from '@/models/booking';
 import Subdomains from '@/models/subdomains';
-import io from 'socket.io-client'
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/pages/api/auth/[...nextauth]"
 
 // API route to get all users
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
+        const subdomain_name = req.headers.host.split('.')[0];
+
+        const session = await getServerSession(req, res, authOptions)
+        if (session) {
+          // Signed in
+          if (session.role !== 'hostess' || session.subdomain_name !== subdomain_name) 
+            return res.status(401).end()
+        } else {
+          // Not Signed in
+          res.status(401).end()
+        }
+
+
         // Get the client's IP address from the request object
         const ip = req.connection.remoteAddress;
         
-        const subdomain_name = req.headers.host.split('.')[0];
         if(subdomain_name === undefined) return res.status(400).json({ error: 'Bad Request' })
         
         const exists = await Subdomains.findOne({subdomain_name: subdomain_name})
@@ -23,8 +36,6 @@ export default async function handler(req, res) {
         const uid = cookies.uid_token;
         const user_agent = req.headers['user-agent'];
         const unix_timestamp = Date.now();
-        
-
 
         /* get info from json body */
         let {

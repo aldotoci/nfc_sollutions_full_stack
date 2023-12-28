@@ -13,6 +13,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import styles from "@/styles/book.module.css";
 import { TextField } from "@mui/material";
 import io from "socket.io-client";
+import Alert from '@mui/material/Alert';
 
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
@@ -43,6 +44,7 @@ export async function getServerSideProps(context) {
 
 export default function Home({ subdomain, storeName }) {
   const [currentFormState, setCurrentFormState] = useState(0);
+  const [alertErrorVisible, setAlertErrorVisible] = useState(false)
   const [formData, setFormData] = useState({
     reserved_time: dayjs(`${dayjs().format("YYYY-MM-DD")}T17:30`).format("YYYY-MM-DDTHH:mm"),
     full_name: undefined,
@@ -199,6 +201,8 @@ export default function Home({ subdomain, storeName }) {
     });
   }
 
+  // components
+
   const date_component = (
     <div className={styles.inputComponentWrapper}>
       <ArrowBackIosIcon onClick={onDateLeft} />
@@ -253,12 +257,21 @@ export default function Home({ subdomain, storeName }) {
 		setCurrentFormState(nextFormN);
 	}
 
+  // Submit the form functions 
+
   const isValidEmail = (email) => {
     // Regular expression for a basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
     // Test the email against the regular expression
     return emailRegex.test(email);
+  }
+  const isValidPhoneNumber = (phoneNumber) => {
+    // Regular expression for a basic phone number validation
+    const phoneRegex = /^\+\d{1,3}\d{1,14}$/;
+  
+    // Test the phone number against the regular expression
+    return phoneRegex.test(phoneNumber);
   }
 
 	const onSubmit = () => {
@@ -272,7 +285,14 @@ export default function Home({ subdomain, storeName }) {
       }
     }
     if(!isValidEmail(formData?.email_address)) {
-      return alert('Please enter a valid email address')
+      // return alert('Please enter a valid email address')
+      setAlertErrorVisible('Please enter a valid email address')
+      return setTimeout(() => setAlertErrorVisible(false), 3000)
+    }
+    if(!isValidPhoneNumber(formData?.phone_number)) {
+      // return alert('Please enter a valid phone number')
+      setAlertErrorVisible('Please enter a valid phone number')
+      return setTimeout(() => setAlertErrorVisible(false), 3000)
     }
 
     localStorage.removeItem("reserved_time");
@@ -445,6 +465,11 @@ export default function Home({ subdomain, storeName }) {
             {currentFormState === 2 && secondForm}
             {currentFormState === 3 && lastInfo}
           </div>
+      </div>
+      <div style={{display: !!alertErrorVisible ? 'block'  : 'none'}} className={styles.alert_container}>
+        <Alert severity="error">
+          {alertErrorVisible}
+        </Alert>             
       </div>
     </ThemeProvider>
   );
