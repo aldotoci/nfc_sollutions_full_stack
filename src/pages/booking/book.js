@@ -98,10 +98,10 @@ export default function Home({ subdomain, storeName }) {
     if (storedReservedTime && storedGuests) {
       // If it exists, set it in the state
       setFormData((formData) => ({ ...formData, reserved_time: storedReservedTime, guests: storedGuests }));
-      setCurrentFormState(1);
+      setCurrentFormState(0);
       if(session) {
         setFormData((formData) => ({ ...formData, full_name: session.user.name, email_address: session.user.email }))
-        setCurrentFormState(1);
+        setCurrentFormState(0);
       }
     }
   }, [session]); // Empty dependency array ensures this effect runs once on mount
@@ -319,7 +319,7 @@ export default function Home({ subdomain, storeName }) {
         <div className="store-link">{guests}</div>
       </div>
       <Button onClick={() => {
-        onNext(1)
+        onNext(2)
         localStorage.setItem("reserved_time", formData?.reserved_time);
         localStorage.setItem("guests", formData?.guests);
       }}>Next</Button>
@@ -376,7 +376,7 @@ export default function Home({ subdomain, storeName }) {
         </div>
 			</div>
 			<div className={styles?.midFormNavButtonsContainer}>
-        <ArrowBackIosIcon onClick={() => onNext(1)} style={{fill: "#BB1616", fontSize: 30}} />
+        <ArrowBackIosIcon onClick={() => onNext(0)} style={{fill: "#BB1616", fontSize: 30}} />
       	{/* <Button className={styles?.prevButton} onClick={() => onNext(0)}>Prev</Button> */}
         <Button onClick={onSubmit}>Submit</Button>
         <div style={{width: 20}}></div>
